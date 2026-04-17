@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 import type { AnalysisResult } from '../core/AnalysisEngine';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, CartesianGrid } from 'recharts';
 import { AlertTriangle, CheckCircle, Activity, Clock, FileWarning } from 'lucide-react';
+import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 
 interface AnalysisDashboardProps {
     result: AnalysisResult;
@@ -11,110 +13,150 @@ interface AnalysisDashboardProps {
 export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, isRecording }) => {
     
     const statusColor = useMemo(() => {
-        if (result.confidenceScore >= 80) return 'var(--accent)';
-        if (result.confidenceScore >= 50) return 'var(--warning)';
-        return 'var(--danger)';
+        if (result.confidenceScore >= 80) return 'text-accent-cyan shadow-[0_0_20px_rgba(0,240,255,0.3)] border-accent-cyan/40 bg-accent-cyan/10';
+        if (result.confidenceScore >= 50) return 'text-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.3)] border-yellow-500/40 bg-yellow-500/10';
+        return 'text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)] border-red-500/40 bg-red-500/10';
     }, [result.confidenceScore]);
 
+    const statusHex = useMemo(() => {
+        if (result.confidenceScore >= 80) return '#00f0ff';
+        if (result.confidenceScore >= 50) return '#eab308';
+        return '#ef4444';
+    }, [result.confidenceScore]);
+
+    const containerVariants: Variants = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 }
+        }
+    };
+
+    const itemVariants: Variants = {
+        hidden: { opacity: 0, y: 20 },
+        show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } }
+    };
+
     return (
-        <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <div className="glass-panel flex flex-col h-full p-8">
+            <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h2>Authentication Analysis</h2>
-                    <p>Real-time behavioral signatures</p>
+                    <h2 className="text-2xl font-bold mb-1">Authentication Analysis</h2>
+                    <p className="text-white/50 text-sm">Real-time behavioral signatures</p>
                 </div>
                 {result.cpm > 0 && !isRecording && (
-                     <div className="status-badge" style={{ background: `${statusColor}20`, color: statusColor, borderColor: `${statusColor}40`, padding: '8px 20px', fontSize: '1rem'}}>
+                     <motion.div 
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className={`flex items-center gap-2 px-5 py-2 border rounded-full font-bold ${statusColor}`}
+                     >
                          {result.confidenceScore >= 80 ? <CheckCircle size={18}/> : <AlertTriangle size={18}/>}
                          Confidence: {result.confidenceScore}%
-                     </div>
+                     </motion.div>
                 )}
             </div>
 
             {result.cpm === 0 && !isRecording ? (
-                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-                    Start a session and type some text to see analysis...
+                <div className="flex-1 flex items-center justify-center text-white/40 text-lg">
+                    <Activity size={24} className="mr-3 opacity-50" />
+                    Awaiting telemetry stream...
                 </div>
             ) : (
-                <div className="dashboard-grid">
+                <motion.div 
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="show"
+                    className="grid grid-cols-12 gap-6 mt-8"
+                >
                     {/* Top Metrics */}
-                    <div className="glass-panel metric-card" style={{ background: 'rgba(0,0,0,0.2)'}}>
-                        <div className="metric-label" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <Activity size={16} /> Typing Speed
+                    <motion.div variants={itemVariants} className="col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-bl-full group-hover:scale-150 transition-transform duration-500" />
+                        <div className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-widest mb-3">
+                            <Activity size={16} className="text-accent-cyan" /> Typing Speed
                         </div>
-                        <div className="metric-value">
-                            {result.cpm} <span className="metric-unit">CPM</span>
+                        <div className="font-mono text-4xl font-bold text-white flex items-baseline gap-2 drop-shadow-md">
+                            {result.cpm} <span className="font-main text-base text-white/50 font-normal">CPM</span>
                         </div>
-                    </div>
+                    </motion.div>
                     
-                    <div className="glass-panel metric-card" style={{ background: 'rgba(0,0,0,0.2)'}}>
-                        <div className="metric-label" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <Clock size={16} /> Revision Ratio
+                    <motion.div variants={itemVariants} className="col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-bl-full group-hover:scale-150 transition-transform duration-500" />
+                        <div className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-widest mb-3">
+                            <Clock size={16} className="text-accent-magenta" /> Revision Ratio
                         </div>
-                        <div className="metric-value">
-                            {result.revisionRatio}<span className="metric-unit">%</span>
+                        <div className="font-mono text-4xl font-bold text-white flex items-baseline gap-2 drop-shadow-md">
+                            {result.revisionRatio}<span className="font-main text-base text-white/50 font-normal">%</span>
                         </div>
-                    </div>
+                    </motion.div>
 
-                    <div className="glass-panel metric-card" style={{ background: 'rgba(0,0,0,0.2)'}}>
-                        <div className="metric-label" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <FileWarning size={16} /> Paste Events
+                    <motion.div variants={itemVariants} className="col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-bl-full group-hover:scale-150 transition-transform duration-500" />
+                        <div className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-widest mb-3">
+                            <FileWarning size={16} className="text-yellow-500" /> Paste Events
                         </div>
-                        <div className="metric-value">
+                        <div className="font-mono text-4xl font-bold text-white flex items-baseline gap-2 drop-shadow-md">
                             {result.pasteCount}
                         </div>
-                    </div>
+                    </motion.div>
 
-                    <div className="glass-panel metric-card" style={{ background: 'rgba(0,0,0,0.2)'}}>
-                        <div className="metric-label" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <motion.div variants={itemVariants} className="col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-bl-full group-hover:scale-150 transition-transform duration-500" />
+                        <div className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-widest mb-3">
                             Human Likelihood
                         </div>
-                        <div className="metric-value" style={{ color: statusColor }}>
-                            {result.confidenceScore}<span className="metric-unit">%</span>
+                        <div className="font-mono text-4xl font-bold flex items-baseline gap-2" style={{ color: statusHex, textShadow: `0 0 15px ${statusHex}80` }}>
+                            {result.confidenceScore}<span className="font-main text-base opacity-70 font-normal">%</span>
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* Charts */}
-                    <div className="glass-panel chart-card full-width" style={{ background: 'rgba(0,0,0,0.2)'}}>
-                        <h3 style={{ fontSize: '1rem', marginBottom: '16px', color: 'var(--text-muted)'}}>Typing Rhythm over Time</h3>
+                    <motion.div variants={itemVariants} className="col-span-6 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent min-h-[320px]">
+                        <h3 className="text-xs font-bold text-white/50 uppercase tracking-widest mb-6">Typing Rhythm over Time</h3>
                         {result.cpmHistory.length > 0 ? (
-                           <ResponsiveContainer width="100%" height={250}>
+                           <ResponsiveContainer width="100%" height={220}>
                                 <AreaChart data={result.cpmHistory}>
                                     <defs>
                                         <linearGradient id="colorCpm" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.8}/>
-                                            <stop offset="95%" stopColor="var(--accent)" stopOpacity={0}/>
+                                            <stop offset="5%" stopColor="#00f0ff" stopOpacity={0.4}/>
+                                            <stop offset="95%" stopColor="#00f0ff" stopOpacity={0}/>
                                         </linearGradient>
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                                    <XAxis dataKey="time" stroke="var(--text-muted)" tick={{fill: 'var(--text-muted)', fontSize: 12}} />
-                                    <YAxis stroke="var(--text-muted)" tick={{fill: 'var(--text-muted)', fontSize: 12}} />
-                                    <Tooltip contentStyle={{ background: 'var(--bg-color)', borderColor: 'var(--panel-border)', borderRadius: '8px' }} />
-                                    <Area type="monotone" dataKey="cpm" stroke="var(--accent)" fillOpacity={1} fill="url(#colorCpm)" />
+                                    <XAxis dataKey="time" stroke="rgba(255,255,255,0.3)" tick={{fill: 'rgba(255,255,255,0.5)', fontSize: 12, fontFamily: 'JetBrains Mono'}} />
+                                    <YAxis stroke="rgba(255,255,255,0.3)" tick={{fill: 'rgba(255,255,255,0.5)', fontSize: 12, fontFamily: 'JetBrains Mono'}} />
+                                    <Tooltip 
+                                        contentStyle={{ background: 'rgba(10,10,12,0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', backdropFilter: 'blur(8px)' }} 
+                                        itemStyle={{ color: '#00f0ff', fontWeight: 'bold' }} 
+                                    />
+                                    <Area type="monotone" dataKey="cpm" stroke="#00f0ff" strokeWidth={2} fillOpacity={1} fill="url(#colorCpm)" />
                                 </AreaChart>
                             </ResponsiveContainer>
                         ) : (
-                           <div style={{ height: 250, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>Accumulating data...</div>
+                           <div className="h-[220px] flex items-center justify-center text-white/40">Accumulating data points...</div>
                         )}
-                    </div>
+                    </motion.div>
 
-                    <div className="glass-panel chart-card full-width" style={{ background: 'rgba(0,0,0,0.2)'}}>
-                        <h3 style={{ fontSize: '1rem', marginBottom: '16px', color: 'var(--text-muted)'}}>Pause Distribution</h3>
+                    <motion.div variants={itemVariants} className="col-span-6 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent min-h-[320px]">
+                        <h3 className="text-xs font-bold text-white/50 uppercase tracking-widest mb-6">Pause Distribution</h3>
                         {result.pauseHistogram.some(h => h.count > 0) ? (
-                            <ResponsiveContainer width="100%" height={250}>
+                            <ResponsiveContainer width="100%" height={220}>
                                 <BarChart data={result.pauseHistogram}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                                    <XAxis dataKey="label" stroke="var(--text-muted)" tick={{fill: 'var(--text-muted)', fontSize: 12}} />
-                                    <YAxis stroke="var(--text-muted)" tick={{fill: 'var(--text-muted)', fontSize: 12}} />
-                                    <Tooltip cursor={{fill: 'rgba(255,255,255,0.02)'}} contentStyle={{ background: 'var(--bg-color)', borderColor: 'var(--panel-border)', borderRadius: '8px' }} />
-                                    <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                                    <XAxis dataKey="label" stroke="rgba(255,255,255,0.3)" tick={{fill: 'rgba(255,255,255,0.5)', fontSize: 12, fontFamily: 'JetBrains Mono'}} />
+                                    <YAxis stroke="rgba(255,255,255,0.3)" tick={{fill: 'rgba(255,255,255,0.5)', fontSize: 12, fontFamily: 'JetBrains Mono'}} />
+                                    <Tooltip 
+                                        cursor={{fill: 'rgba(255,255,255,0.05)'}} 
+                                        contentStyle={{ background: 'rgba(10,10,12,0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', backdropFilter: 'blur(8px)' }} 
+                                        itemStyle={{ color: '#ff003c', fontWeight: 'bold' }} 
+                                    />
+                                    <Bar dataKey="count" fill="#ff003c" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         ) : (
-                           <div style={{ height: 250, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>Waiting for natural pauses...</div>
+                           <div className="h-[220px] flex items-center justify-center text-white/40">Waiting for natural cadence patterns...</div>
                         )}
-                    </div>
-                </div>
+                    </motion.div>
+                </motion.div>
             )}
         </div>
     );
