@@ -28,6 +28,7 @@ export const Editor: React.FC<EditorProps> = ({ tracker, onSessionStateChange, o
         setIsRecording(false);
         if (text.length > 0 && onSaveSession) {
             onSaveSession(text);
+            handleReset();
         }
     };
 
@@ -110,7 +111,10 @@ export const Editor: React.FC<EditorProps> = ({ tracker, onSessionStateChange, o
                                 <motion.button 
                                     whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                                     className="flex items-center gap-2 px-5 py-2.5 bg-transparent border border-accent-cyan/50 text-accent-cyan font-bold rounded-xl hover:bg-accent-cyan/10 transition-colors" 
-                                    onClick={() => onSaveSession(text)}
+                                    onClick={() => {
+                                        onSaveSession(text);
+                                        handleReset();
+                                    }}
                                 >
                                     Persist Log
                                 </motion.button>

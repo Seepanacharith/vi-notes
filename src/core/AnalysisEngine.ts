@@ -29,7 +29,7 @@ export class AnalysisEngine {
         // CPM Calculation
         let cpm = 0;
         const insertStrokes = log.filter(k => k.type === 'insert');
-        if (insertStrokes.length > 5) {
+        if (insertStrokes.length > 1) {
             const firstStroke = insertStrokes[0].timestamp;
             const lastStroke = insertStrokes[insertStrokes.length - 1].timestamp;
             const durationMinutes = (lastStroke - firstStroke) / 60000;

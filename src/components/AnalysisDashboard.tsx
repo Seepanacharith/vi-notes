@@ -41,7 +41,7 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, is
         <div className="glass-panel flex flex-col h-full p-8">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h2 className="text-2xl font-bold mb-1">Authentication Analysis</h2>
+                    <h2 className="text-2xl font-bold mb-1">Analysis Dashboard</h2>
                     <p className="text-white/50 text-sm">Real-time behavioral signatures</p>
                 </div>
                 {result.cpm > 0 && !isRecording && (
@@ -51,7 +51,7 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, is
                         className={`flex items-center gap-2 px-5 py-2 border rounded-full font-bold ${statusColor}`}
                      >
                          {result.confidenceScore >= 80 ? <CheckCircle size={18}/> : <AlertTriangle size={18}/>}
-                         Confidence: {result.confidenceScore}%
+                         Score: {result.confidenceScore.toString().padStart(2, '0')}
                      </motion.div>
                 )}
             </div>
@@ -72,7 +72,7 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, is
                     <motion.div variants={itemVariants} className="col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-bl-full group-hover:scale-150 transition-transform duration-500" />
                         <div className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-widest mb-3">
-                            <Activity size={16} className="text-accent-cyan" /> Typing Speed
+                            <Activity size={16} className="text-accent-cyan" /> CPM
                         </div>
                         <div className="font-mono text-4xl font-bold text-white flex items-baseline gap-2 drop-shadow-md">
                             {result.cpm} <span className="font-main text-base text-white/50 font-normal">CPM</span>
@@ -82,7 +82,7 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, is
                     <motion.div variants={itemVariants} className="col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-bl-full group-hover:scale-150 transition-transform duration-500" />
                         <div className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-widest mb-3">
-                            <Clock size={16} className="text-accent-magenta" /> Revision Ratio
+                            <Clock size={16} className="text-accent-magenta" /> Revision %
                         </div>
                         <div className="font-mono text-4xl font-bold text-white flex items-baseline gap-2 drop-shadow-md">
                             {result.revisionRatio}<span className="font-main text-base text-white/50 font-normal">%</span>
@@ -92,7 +92,7 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, is
                     <motion.div variants={itemVariants} className="col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-bl-full group-hover:scale-150 transition-transform duration-500" />
                         <div className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-widest mb-3">
-                            <FileWarning size={16} className="text-yellow-500" /> Paste Events
+                            <FileWarning size={16} className="text-yellow-500" /> Paste Count
                         </div>
                         <div className="font-mono text-4xl font-bold text-white flex items-baseline gap-2 drop-shadow-md">
                             {result.pasteCount}
@@ -102,10 +102,10 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, is
                     <motion.div variants={itemVariants} className="col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-bl-full group-hover:scale-150 transition-transform duration-500" />
                         <div className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-widest mb-3">
-                            Human Likelihood
+                            Score
                         </div>
                         <div className="font-mono text-4xl font-bold flex items-baseline gap-2" style={{ color: statusHex, textShadow: `0 0 15px ${statusHex}80` }}>
-                            {result.confidenceScore}<span className="font-main text-base opacity-70 font-normal">%</span>
+                            {result.confidenceScore.toString().padStart(2, '0')}
                         </div>
                     </motion.div>
 

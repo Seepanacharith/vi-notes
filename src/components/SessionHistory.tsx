@@ -49,8 +49,8 @@ export const SessionHistory = ({ userId }: SessionHistoryProps) => {
     return (
         <div className="glass-panel flex flex-col h-full p-8 overflow-hidden">
             <div className="mb-8">
-                <h2 className="text-2xl font-bold mb-1">Telemetry Archive</h2>
-                <p className="text-white/50 text-sm">Review the authenticity analysis of your persistent documents.</p>
+                <h2 className="text-2xl font-bold mb-1">Your Saved Sessions</h2>
+                <p className="text-white/50 text-sm">Review the authenticity analyses of your past documents.</p>
             </div>
 
             <motion.div 
@@ -59,9 +59,10 @@ export const SessionHistory = ({ userId }: SessionHistoryProps) => {
                 animate="show"
                 className="flex flex-col gap-6 overflow-y-auto pr-4 custom-scrollbar"
             >
-                {sessions.map((session: SavedSession) => {
+                {sessions.map((session: SavedSession, index: number) => {
                     const colorClasses = getStatusColor(session.analysis.confidenceScore);
                     const isAuthentic = session.analysis.confidenceScore >= 80;
+                    const sessionNumber = sessions.length - index;
 
                     return (
                         <motion.div 
@@ -73,27 +74,36 @@ export const SessionHistory = ({ userId }: SessionHistoryProps) => {
                             {/* Hover accent line */}
                             <div className="absolute left-0 top-0 bottom-0 w-1 bg-accent-cyan opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                            <div className="flex justify-between items-center">
+                            <div className="flex flex-col gap-4">
+                                <div className="text-lg font-bold text-white">
+                                    {sessionNumber} Editor
+                                </div>
                                 <div className="text-sm text-white/50 font-mono">
                                     {new Date(session.date).toLocaleString()}
                                 </div>
-                                <div className={`flex items-center gap-2 px-4 py-1.5 border rounded-full text-xs font-bold ${colorClasses}`}>
-                                    {isAuthentic ? <CheckCircle size={14}/> : <AlertTriangle size={14}/>}
-                                    Score: {session.analysis.confidenceScore}%
+                                <div>
+                                    <span className={`inline-flex items-center gap-2 px-4 py-1.5 border rounded-full text-xs font-bold ${colorClasses}`}>
+                                        {isAuthentic ? <CheckCircle size={14}/> : <AlertTriangle size={14}/>}
+                                        Score: {session.analysis.confidenceScore.toString().padStart(2, '0')}
+                                    </span>
                                 </div>
                             </div>
                             
-                            <div className="bg-black/30 p-5 rounded-xl text-white/70 font-light leading-relaxed border border-white/5 relative max-h-[120px] overflow-hidden">
-                                "{session.text.substring(0, 300)}{session.text.length > 300 ? '...' : ''}"
-                                {session.text.length > 300 && (
-                                    <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#0a0a0c] to-transparent" />
-                                )}
+                            <div>
+                                <div className="text-sm font-bold text-white mb-2">Analysis Dashboard</div>
+                                <div className="text-xs text-white/50 mb-1">Preview:</div>
+                                <div className="bg-black/30 p-5 rounded-xl text-white font-normal leading-relaxed border border-white/5 text-base whitespace-pre-wrap">
+                                    {session.text}
+                                </div>
                             </div>
 
-                            <div className="flex gap-8 font-mono text-xs text-white/50 mt-1">
-                                <div><strong className="text-white font-main mr-1.5">CPM:</strong>{session.analysis.cpm}</div>
-                                <div><strong className="text-white font-main mr-1.5">PASTES:</strong>{session.analysis.pasteCount} chunks</div>
-                                <div><strong className="text-white font-main mr-1.5">REVISIONS:</strong>{session.analysis.revisionRatio}%</div>
+                            <div>
+                                <div className="text-sm font-bold text-white mb-2">Session History</div>
+                                <div className="flex flex-col gap-2 font-mono text-xs text-white/50">
+                                    <div><strong className="text-white font-main mr-1.5">CPM:</strong>{session.analysis.cpm}</div>
+                                    <div><strong className="text-white font-main mr-1.5">Paste Count:</strong>{session.analysis.pasteCount}</div>
+                                    <div><strong className="text-white font-main mr-1.5">Revision %:</strong>{session.analysis.revisionRatio}%</div>
+                                </div>
                             </div>
                         </motion.div>
                     );
