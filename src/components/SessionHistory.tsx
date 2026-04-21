@@ -92,7 +92,7 @@ export const SessionHistory = ({ userId }: SessionHistoryProps) => {
                             <div>
                                 <div className="text-sm font-bold text-white mb-2">Analysis Dashboard</div>
                                 <div className="text-xs text-white/50 mb-1">Preview:</div>
-                                <div className="bg-black/30 p-5 rounded-xl text-white font-normal leading-relaxed border border-white/5 text-base whitespace-pre-wrap">
+                                <div className="bg-black/30 p-5 rounded-xl text-white font-normal leading-relaxed border border-white/5 text-base whitespace-pre-wrap max-h-32 overflow-y-auto custom-scrollbar">
                                     {session.text}
                                 </div>
                             </div>

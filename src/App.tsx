@@ -30,8 +30,11 @@ function App() {
         setAnalysisResult(AnalysisEngine.analyze(tracker.getLog()));
       }, 200) as unknown as number;
     } else {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setAnalysisResult(AnalysisEngine.analyze(tracker.getLog()));
+        const log = tracker.getLog();
+        if (log.length > 0) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setAnalysisResult(AnalysisEngine.analyze(log));
+        }
     }
     return () => clearInterval(interval);
   }, [isRecording, tracker, activeTab]);
@@ -96,7 +99,10 @@ function App() {
                       tracker={tracker} 
                       onSessionStateChange={setIsRecording} 
                       onSaveSession={(text) => {
-                          SessionService.saveSession(currentUser.id, text, analysisResult);
+                          const finalLog = tracker.getLog();
+                          const finalResult = finalLog.length > 0 ? AnalysisEngine.analyze(finalLog) : analysisResult;
+                          SessionService.saveSession(currentUser.id, text, finalResult);
+                          setAnalysisResult(finalResult);
                           setActiveTab('history');
                       }}
                   />

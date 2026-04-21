@@ -69,7 +69,7 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, is
                     className="grid grid-cols-12 gap-6 mt-8"
                 >
                     {/* Top Metrics */}
-                    <motion.div variants={itemVariants} className="col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
+                    <motion.div variants={itemVariants} className="col-span-12 md:col-span-6 lg:col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-bl-full group-hover:scale-150 transition-transform duration-500" />
                         <div className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-widest mb-3">
                             <Activity size={16} className="text-accent-cyan" /> CPM
@@ -79,7 +79,7 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, is
                         </div>
                     </motion.div>
                     
-                    <motion.div variants={itemVariants} className="col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
+                    <motion.div variants={itemVariants} className="col-span-12 md:col-span-6 lg:col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-bl-full group-hover:scale-150 transition-transform duration-500" />
                         <div className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-widest mb-3">
                             <Clock size={16} className="text-accent-magenta" /> Revision %
@@ -89,7 +89,7 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, is
                         </div>
                     </motion.div>
 
-                    <motion.div variants={itemVariants} className="col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
+                    <motion.div variants={itemVariants} className="col-span-12 md:col-span-6 lg:col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-bl-full group-hover:scale-150 transition-transform duration-500" />
                         <div className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-widest mb-3">
                             <FileWarning size={16} className="text-yellow-500" /> Paste Count
@@ -99,7 +99,7 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, is
                         </div>
                     </motion.div>
 
-                    <motion.div variants={itemVariants} className="col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
+                    <motion.div variants={itemVariants} className="col-span-12 md:col-span-6 lg:col-span-3 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-bl-full group-hover:scale-150 transition-transform duration-500" />
                         <div className="flex items-center gap-2 text-xs font-bold text-white/50 uppercase tracking-widest mb-3">
                             Score
@@ -110,7 +110,7 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, is
                     </motion.div>
 
                     {/* Charts */}
-                    <motion.div variants={itemVariants} className="col-span-6 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent min-h-[320px]">
+                    <motion.div variants={itemVariants} className="col-span-12 xl:col-span-6 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent min-h-[320px]">
                         <h3 className="text-xs font-bold text-white/50 uppercase tracking-widest mb-6">Typing Rhythm over Time</h3>
                         {result.cpmHistory.length > 0 ? (
                            <ResponsiveContainer width="100%" height={220}>
@@ -136,7 +136,7 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, is
                         )}
                     </motion.div>
 
-                    <motion.div variants={itemVariants} className="col-span-6 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent min-h-[320px]">
+                    <motion.div variants={itemVariants} className="col-span-12 xl:col-span-6 glass-panel p-6 bg-gradient-to-br from-white/5 to-transparent min-h-[320px]">
                         <h3 className="text-xs font-bold text-white/50 uppercase tracking-widest mb-6">Pause Distribution</h3>
                         {result.pauseHistogram.some(h => h.count > 0) ? (
                             <ResponsiveContainer width="100%" height={220}>
